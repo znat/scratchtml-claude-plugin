@@ -13,17 +13,20 @@
   "userConfig": {
     "plan_review": {
       "type": "boolean",
-      "title": "Review plans on scratchtml before exiting plan mode",
+      "title": "Plan review",
+      "description": "Review plans on scratchtml before exiting plan mode (once per session).",
       "default": true
     },
     "auto_open": {
       "type": "boolean",
-      "title": "Open uploaded plans in the browser automatically (local sessions only)",
+      "title": "Auto-open in browser",
+      "description": "Open uploaded plans in the browser automatically (local sessions only).",
       "default": true
     },
     "approve_mode": {
       "type": "string",
-      "title": "After review: 'ask' shows the built-in approval dialog; 'auto' approves reviewed plans automatically in auto mode",
+      "title": "Approval mode",
+      "description": "'ask' shows the built-in approval dialog after review; 'auto' approves reviewed plans automatically in auto mode.",
       "default": "ask"
     }
   }
