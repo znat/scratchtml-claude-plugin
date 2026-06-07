@@ -28,6 +28,18 @@
       "title": "Approval mode",
       "description": "'ask' shows the built-in approval dialog after review; 'auto' approves reviewed plans automatically in auto mode.",
       "default": "ask"
+    },
+    "ui_mockups": {
+      "type": "boolean",
+      "title": "UI mockups in plans",
+      "description": "Encourages Claude to include inline HTML/CSS/SVG mockups to illustrate UI layout ideas in plans.",
+      "default": true
+    },
+    "diagrams": {
+      "type": "boolean",
+      "title": "Mermaid diagrams in plans",
+      "description": "Encourages Claude to use mermaid fences for flows and architecture diagrams (rendered on scratchtml).",
+      "default": true
     }
   }
 }
