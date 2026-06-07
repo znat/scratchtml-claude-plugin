@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "scratchtml": {
+      "type": "http",
+      "url": "https://scratchtml.link/mcp"
+    }
+  }
+}

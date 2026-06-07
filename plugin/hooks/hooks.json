@@ -1,0 +1,42 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/plan-review.sh ${user_config.plan_review} ${user_config.approve_mode}",
+            "timeout": 10,
+            "statusMessage": "scratchtml plan review…"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__scratchtml__upload_plan",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/open-plan.sh ${user_config.auto_open}",
+            "timeout": 10,
+            "statusMessage": "Opening plan in browser…"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/approve-plan.sh ${user_config.approve_mode}",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "scratchtml",
+  "displayName": "scratchtml plans",
+  "version": "0.1.0",
+  "description": "Review, share and discuss Claude Code plans on scratchtml. Plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; share/get/list commands included.",
+  "author": {
+    "name": "Nathan Zylbersztejn",
+    "email": "nathan.zylbersztejn@gmail.com"
+  },
+  "homepage": "https://scratchtml.link",
+  "repository": "https://github.com/znat/scratchtml-claude-plugin",
+  "license": "MIT",
+  "userConfig": {
+    "plan_review": {
+      "type": "boolean",
+      "title": "Review plans on scratchtml before exiting plan mode",
+      "default": true
+    },
+    "auto_open": {
+      "type": "boolean",
+      "title": "Open uploaded plans in the browser automatically (local sessions only)",
+      "default": true
+    },
+    "approve_mode": {
+      "type": "string",
+      "title": "After review: 'ask' shows the built-in approval dialog; 'auto' approves reviewed plans automatically in auto mode",
+      "default": "ask"
+    }
+  }
+}

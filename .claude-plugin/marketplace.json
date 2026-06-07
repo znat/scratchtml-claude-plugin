@@ -1,0 +1,16 @@
+{
+  "name": "scratchtml",
+  "owner": {
+    "name": "Nathan Zylbersztejn",
+    "email": "nathan.zylbersztejn@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "scratchtml",
+      "source": "./plugin",
+      "description": "Review, share and discuss Claude Code plans on scratchtml — ephemeral, commentable links.",
+      "homepage": "https://scratchtml.link",
+      "repository": "https://github.com/znat/scratchtml-claude-plugin"
+    }
+  ]
+}
