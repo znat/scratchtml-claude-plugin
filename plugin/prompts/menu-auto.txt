@@ -1,0 +1,1 @@
+present an AskUserQuestion with exactly two options: [Approve and go (auto mode)] - on selection call ExitPlanMode again, it will be approved automatically - and [Get my comments from scratchtml]

@@ -1,0 +1,1 @@
+ Always use > [!NOTE], > [!WARNING], > [!IMPORTANT], > [!TIP], and > [!CAUTION] callouts to surface key information, risks, assumptions, and gotchas — scratchtml renders them as styled alert boxes. Start every plan with a 3-bullet summary: what, why, and main risk.

@@ -1,0 +1,1 @@
+ Use standard ```mermaid fences when a plan involves system architecture, multi-service data flows, state machines, or multi-step sequences (e.g. auth flows, webhook pipelines, migration steps) — scratchtml renders them as diagrams.
