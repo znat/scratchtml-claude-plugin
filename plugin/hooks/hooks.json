@@ -1,21 +1,8 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "ExitPlanMode",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/plan-review.sh ${user_config.plan_review} ${user_config.approve_mode} ${user_config.ui_mockups} ${user_config.diagrams}",
-            "timeout": 10,
-            "statusMessage": "scratchtml plan review…"
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
-        "matcher": "mcp__scratchtml__upload_plan",
+        "matcher": "mcp__plugin_scratchtml_scratchtml__upload_plan",
         "hooks": [
           {
             "type": "command",
@@ -30,6 +17,12 @@
       {
         "matcher": "ExitPlanMode",
         "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/plan-review.sh ${user_config.plan_review} ${user_config.approve_mode} ${user_config.ui_mockups} ${user_config.diagrams}",
+            "timeout": 10,
+            "statusMessage": "scratchtml plan review…"
+          },
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/approve-plan.sh ${user_config.approve_mode}",
