@@ -1,6 +1,6 @@
 # scratchtml for Claude Code
 
-Review, share and discuss Claude Code **plans** on [scratchtml](https://scratchtml.link) — ephemeral (24h), sandboxed, commentable links.
+A Claude Code plugin for [scratchtml.link](https://scratchtml.link) — review, share and discuss Claude Code plans on ephemeral (24h), sandboxed, commentable links.
 
 ## What it does
 
@@ -39,13 +39,15 @@ Do the `/mcp` sign-in right away — it's what lets the first upload succeed.
 
 ## Configuration
 
-Three options, prompted at install and editable later via `/plugin`:
+All options are prompted at install and editable later via `/plugin`:
 
 | Option | Default | Effect |
 |---|---|---|
-| `plan_review` | `true` | Intercept `ExitPlanMode` and run the review loop (once per session) |
+| `plan_review` | `true` | Intercept plan exit and run the review loop (once per session) |
 | `auto_open` | `true` | Open uploaded plans in your browser automatically |
-| `approve_mode` | `ask` | `ask`: built-in approval dialog after review. `auto`: reviewed plans are **approved automatically in auto mode** — the built-in dialog never appears (un-reviewed plans still get the dialog) |
+| `approve_mode` | `ask` | `ask`: built-in approval dialog after review. `auto`: reviewed plans are **approved automatically in auto mode** |
+| `ui_mockups` | `true` | Encourage Claude to embed inline HTML/CSS mockups for UI sections of plans |
+| `diagrams` | `true` | Encourage Claude to use mermaid fences for flows and architecture diagrams |
 
 ## Opting out
 
@@ -61,11 +63,5 @@ Three options, prompted at install and editable later via `/plugin`:
 ## Limitations
 
 - Hooks are bash scripts — on Windows you need Git Bash.
-- `auto_open` runs on the machine hosting the session: in Remote Control / remote sessions the browser opens on the host, not your remote device — use the link Claude posts in chat.
+- `auto_open` runs on the machine hosting the session: in remote sessions the browser opens on the host, not your remote device — use the link Claude posts in chat.
 - The review loop fires once per session; a second plan in the same session skips straight to approval.
-
-## What's in the box
-
-- **MCP server** (`https://scratchtml.link/mcp`, OAuth): `upload_plan`, `get_feedback`, `list_plans`
-- **Hooks**: PreToolUse/`ExitPlanMode` (review loop) · PostToolUse/`upload_plan` (browser open) · PermissionRequest/`ExitPlanMode` (auto-approve when `approve_mode=auto`)
-- **Skills**: `share`, `get`, `list`
