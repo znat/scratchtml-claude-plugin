@@ -1,7 +1,7 @@
 {
   "name": "scratchtml",
   "displayName": "scratchtml plans",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Review, share and discuss Claude Code plans on scratchtml. Plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; share/get/list commands included.",
   "author": {
     "name": "Nathan Zylbersztejn",
@@ -14,7 +14,7 @@
     "plan_review": {
       "type": "boolean",
       "title": "Plan review",
-      "description": "Review plans on scratchtml before exiting plan mode (once per session).",
+      "description": "Review plans on scratchtml before exiting plan mode (every plan, across permission modes).",
       "default": true
     },
     "auto_open": {

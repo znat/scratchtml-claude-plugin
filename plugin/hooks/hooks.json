@@ -1,19 +1,30 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/prime.sh ${user_config.plan_review} ${user_config.ui_mockups} ${user_config.diagrams}",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "mcp__plugin_scratchtml_scratchtml__upload_plan",
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/open-plan.sh ${user_config.auto_open}",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/open-plan.sh ${user_config.auto_open} ${user_config.ui_mockups}",
             "timeout": 10,
             "statusMessage": "Opening plan in browser…"
           }
         ]
       }
     ],
-    "PermissionRequest": [
+    "PreToolUse": [
       {
         "matcher": "ExitPlanMode",
         "hooks": [
@@ -22,7 +33,14 @@
             "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/plan-review.sh ${user_config.plan_review} ${user_config.approve_mode} ${user_config.ui_mockups} ${user_config.diagrams}",
             "timeout": 10,
             "statusMessage": "scratchtml plan review…"
-          },
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/approve-plan.sh ${user_config.approve_mode}",

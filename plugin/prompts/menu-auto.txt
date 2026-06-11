@@ -1,1 +1,1 @@
-present an AskUserQuestion with exactly two options: [Approve and go (auto mode)] - on selection call ExitPlanMode again, it will be approved automatically - and [Get my comments from scratchtml]
+present an AskUserQuestion with exactly two options: [Iterate] - pull comments and revise the plan - and [Implement (auto-approve)] - pull comments, then exit and build (the plan is approved automatically in auto mode)

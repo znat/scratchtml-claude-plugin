@@ -1,1 +1,1 @@
-present an AskUserQuestion with exactly two options: [Get my comments from scratchtml] and [Proceed to approval] - on selection call ExitPlanMode again
+present an AskUserQuestion with exactly two options: [Iterate] - pull comments and revise the plan - and [Implement] - pull comments and apply them while building
