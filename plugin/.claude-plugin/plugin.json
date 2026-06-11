@@ -1,8 +1,8 @@
 {
   "name": "scratchtml",
   "displayName": "scratchtml plans",
-  "version": "0.4.0",
-  "description": "Review, share and discuss Claude Code plans on scratchtml. Plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; share/get/list commands included.",
+  "version": "0.5.0",
+  "description": "Review, share and discuss Claude Code plans on scratchtml. Plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; Claude can reply to reviewers' comments; share/get/list commands included.",
   "author": {
     "name": "Nathan Zylbersztejn",
     "email": "nathan.zylbersztejn@gmail.com"
