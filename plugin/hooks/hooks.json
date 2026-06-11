@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/open-plan.sh ${user_config.auto_open} ${user_config.ui_mockups}",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/open-plan.sh ${user_config.auto_open} ${user_config.ui_mockups} ${user_config.approve_mode}",
             "timeout": 10,
             "statusMessage": "Opening plan in browser…"
           }

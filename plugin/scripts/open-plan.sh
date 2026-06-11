@@ -10,6 +10,12 @@
 #
 # $1 = auto_open (true/false)
 # $2 = ui_mockups (true/false)
+# $3 = approve_mode (ask/auto) — selects the post-upload menu text
+#
+# Always emits the post-upload guidance (relay link + Iterate/Implement menu) as
+# additionalContext, so the menu fires even when the plan is uploaded BEFORE any
+# ExitPlanMode attempt (the common path) — where plan-review.sh's deny+reason
+# never runs. Prompt text lives in ../prompts/ — edit there, not here.
 
 PAYLOAD="$(cat)"
 SESSION_ID="$(printf '%s' "$PAYLOAD" | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
@@ -30,26 +36,43 @@ if [ "${1:-true}" = "true" ] && [ -n "$URL" ]; then
   fi
 fi
 
-# ASCII-mockup nudge (advisory; conservative, to avoid false positives).
-if [ "${2:-true}" = "true" ]; then
-  printf '%s' "$PAYLOAD" | python3 -c "
+# Post-upload guidance (always) + optional ASCII-mockup nudge (prepended), as a
+# single PostToolUse additionalContext object.
+PROMPTS="${CLAUDE_PLUGIN_ROOT}/prompts"
+if [ "${3:-ask}" = "auto" ]; then
+  MENU_FILE="${PROMPTS}/menu-auto.txt"
+else
+  MENU_FILE="${PROMPTS}/menu-ask.txt"
+fi
+
+printf '%s' "$PAYLOAD" | python3 -c "
 import sys, json
 try:
-    d = json.load(sys.stdin)
+    d = json.loads(sys.stdin.read())
     content = (d.get('tool_input') or {}).get('content', '') or ''
 except Exception:
     content = ''
-box = set('│┃├┣└┗┌┏┐┓┘┛┤┫┬┳┴┻┼╋─━')
-has_box = sum(ch in box for ch in content) >= 4
-lc = content.lower()
-has_html = ('<div' in lc) or ('<svg' in lc)
-if has_box and not has_html:
-    msg = ('The plan you just uploaded renders its UI as ASCII-art boxes. '
-           'scratchtml renders real HTML — re-author those mockups as inline '
-           'HTML/CSS (a self-contained <div> with inline styles, NOT inside a '
-           'code fence) and re-upload the revision before relaying the link.')
-    out = {'hookSpecificOutput': {'hookEventName': 'PostToolUse', 'additionalContext': msg}}
-    print(json.dumps(out))
-"
-fi
+
+post_upload_path, menu_path, ui_mockups = sys.argv[1], sys.argv[2], sys.argv[3] == 'true'
+
+menu = open(menu_path).read().rstrip('\n')
+msg = open(post_upload_path).read().rstrip('\n').replace('{{MENU}}', menu)
+
+# ASCII-mockup nudge (advisory; conservative, to avoid false positives).
+if ui_mockups:
+    box = set('│┃├┣└┗┌┏┐┓┘┛┤┫┬┳┴┻┼╋─━')
+    has_box = sum(ch in box for ch in content) >= 4
+    lc = content.lower()
+    has_html = ('<div' in lc) or ('<svg' in lc)
+    if has_box and not has_html:
+        nudge = ('NOTE: the plan you just uploaded renders its UI as ASCII-art boxes. '
+                 'scratchtml renders real HTML — re-author those mockups as inline '
+                 'HTML/CSS (a self-contained <div> with inline styles, NOT inside a '
+                 'code fence) and re-upload the revision first.')
+        msg = nudge + '\n\n' + msg
+
+out = {'hookSpecificOutput': {'hookEventName': 'PostToolUse', 'additionalContext': msg}}
+print(json.dumps(out))
+" "${PROMPTS}/post-upload.txt" "$MENU_FILE" "${2:-true}"
+
 exit 0
