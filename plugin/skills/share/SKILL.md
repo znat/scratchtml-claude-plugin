@@ -13,10 +13,10 @@ Upload any document — a report, implementation plan, design document, research
    - A file path → Read the file.
    - Pasted/quoted content → use it directly.
    - Nothing → ask what to share; if a plan or document file exists for this session, offer it as the default.
-2. Call `mcp__scratchtml__share_document` with the full markdown as `content` and a descriptive `filename` ending in `.md` (e.g. `design-doc.md`, `report.md`, `plan.md`). Markdown is rendered to styled HTML automatically; only use an `.html` filename for prebuilt HTML documents (e.g. `mockup.html`).
+2. Call `mcp__plugin_scratchtml_scratchtml__share_document` with the full markdown as `content` and a descriptive `filename` ending in `.md` (e.g. `design-doc.md`, `report.md`, `plan.md`). Markdown is rendered to styled HTML automatically; only use an `.html` filename for prebuilt HTML documents (e.g. `mockup.html`).
    - **Publishing an updated version** of something already shared (this session or a slug/URL the user gives)? Pass `revises` with that slug/URL — the link stays the same, existing comments carry forward, and viewers can diff against the previous version.
 3. Relay the returned link to the user **verbatim as a clickable URL**, with the expiry time. For a revision, note that the link is unchanged and it's now `vN`.
-4. Mention that inline comments left on the page can be retrieved later with `/scratchtml:get <slug-or-url>`.
+4. Mention that inline comments left on the page can be retrieved later with `/scratchtml:get <slug-or-url>` — which also lets Claude reply to each comment thread once it's addressed.
 
 ## Failure handling
 

@@ -1,5 +1,6 @@
 {
   "name": "scratchtml",
+  "description": "Share and review any document Claude generates — reports, implementation plans, designs, mockups — on scratchtml's ephemeral, commentable links, with an automatic plan-mode review loop.",
   "owner": {
     "name": "Nathan Zylbersztejn",
     "email": "nathan.zylbersztejn@gmail.com"
@@ -7,8 +8,12 @@
   "plugins": [
     {
       "name": "scratchtml",
+      "displayName": "scratchtml",
       "source": "./plugin",
-      "description": "Share and review any document — reports, plans, designs, mockups — on scratchtml's ephemeral, commentable links.",
+      "description": "Share and review any document — reports, plans, designs, mockups — on scratchtml's ephemeral, commentable links, with an automatic plan-mode review loop before exiting plan mode.",
+      "category": "productivity",
+      "keywords": ["review", "plan-mode", "documents", "collaboration", "comments", "markdown"],
+      "tags": ["review", "plan-mode", "documents", "collaboration"],
       "homepage": "https://scratchtml.link",
       "repository": "https://github.com/znat/scratchtml-claude-plugin"
     }

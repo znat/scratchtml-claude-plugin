@@ -1,5 +1,5 @@
 #!/bin/bash
-# scratchtml post-upload — PostToolUse hook on mcp__scratchtml__share_document.
+# scratchtml post-upload — PostToolUse hook on mcp__plugin_scratchtml_scratchtml__share_document.
 #
 #   1. Marks that a plan was uploaded this session (.uploaded) — this is the bit
 #      the PreToolUse gate reads to let the next ExitPlanMode through.
@@ -37,7 +37,9 @@ if [ "${1:-true}" = "true" ] && [ -n "$URL" ]; then
 fi
 
 # Post-upload guidance (always) + optional ASCII-mockup nudge (prepended), as a
-# single PostToolUse additionalContext object.
+# single PostToolUse additionalContext object. python3 builds it; without python3
+# the upload + browser-open above still happened, so just no-op the menu.
+command -v python3 >/dev/null 2>&1 || { echo "scratchtml: python3 not found on PATH — post-upload menu skipped (see plugin README)." >&2; exit 0; }
 PROMPTS="${CLAUDE_PLUGIN_ROOT}/prompts"
 if [ "${3:-ask}" = "auto" ]; then
   MENU_FILE="${PROMPTS}/menu-auto.txt"

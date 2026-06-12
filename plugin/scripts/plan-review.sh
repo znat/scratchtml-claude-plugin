@@ -28,6 +28,10 @@
 
 [ "${1:-true}" = "true" ] || exit 0
 
+# python3 computes the plan hash and emits the deny JSON; without it, deferring
+# (exit 0) is the safe fallback — the normal permission flow still runs.
+command -v python3 >/dev/null 2>&1 || { echo "scratchtml: python3 not found on PATH — plan-review hooks need it (see plugin README)." >&2; exit 0; }
+
 PAYLOAD="$(cat)"
 SESSION_ID="$(printf '%s' "$PAYLOAD" | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n1)"
 [ -n "$SESSION_ID" ] || exit 0
