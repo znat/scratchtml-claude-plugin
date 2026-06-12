@@ -1,24 +1,24 @@
 ---
 name: get
-description: Retrieve inline review comments from a scratchtml plan or document. Use when the user asks to get, fetch, or pull their comments/feedback from scratchtml.
+description: Retrieve inline review comments from a scratchtml document. Use when the user asks to get, fetch, or pull their comments/feedback from scratchtml.
 ---
 
 # Get review comments from scratchtml
 
-Fetch the inline comments left on an uploaded plan/document and act on them.
+Fetch the inline comments left on an uploaded document and act on them.
 
 ## Steps
 
 1. Resolve the slug:
    - `$ARGUMENTS` contains a slug or a `usercontent.scratchtml.link/<slug>` URL → use it.
-   - No argument → use the most recently uploaded plan in this conversation; if none, ask for the link.
+   - No argument → use the most recently uploaded document in this conversation; if none, ask for the link.
 2. Call `mcp__scratchtml__get_feedback` with the slug.
 3. Present each comment **paired with the exact text it refers to** (quoted), so the user sees what each remark targets.
-4. If the comments concern a plan or file being worked on in this session, offer to incorporate them.
+4. If the comments concern a document or file being worked on in this session, offer to incorporate them.
 
 ## Revision convention
 
-When incorporating comments into a plan, re-upload the revision (filename `plan-revN.md`) with a top section titled **"## Changes from review"** — a table mapping each comment to its resolution — plus inline *(per review)* markers on edited passages. Relay the new link.
+When incorporating comments into a document, re-upload the revision (filename `<name>-revN.md`) with a top section titled **"## Changes from review"** — a table mapping each comment to its resolution — plus inline *(per review)* markers on edited passages. Relay the new link.
 
 ## Failure handling
 

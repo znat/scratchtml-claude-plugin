@@ -8,7 +8,7 @@
     {
       "name": "scratchtml",
       "source": "./plugin",
-      "description": "Review, share and discuss Claude Code plans on scratchtml — ephemeral, commentable links.",
+      "description": "Share and review any document — reports, plans, designs, mockups — on scratchtml's ephemeral, commentable links.",
       "homepage": "https://scratchtml.link",
       "repository": "https://github.com/znat/scratchtml-claude-plugin"
     }

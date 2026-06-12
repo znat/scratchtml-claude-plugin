@@ -13,13 +13,13 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__plugin_scratchtml_scratchtml__upload_plan",
+        "matcher": "mcp__plugin_scratchtml_scratchtml__share_document",
         "hooks": [
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}\"/scripts/open-plan.sh ${user_config.auto_open} ${user_config.ui_mockups} ${user_config.approve_mode}",
             "timeout": 10,
-            "statusMessage": "Opening plan in browser…"
+            "statusMessage": "Opening document in browser…"
           }
         ]
       }

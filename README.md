@@ -1,10 +1,10 @@
 # scratchtml for Claude Code
 
-A Claude Code plugin for [scratchtml.link](https://scratchtml.link) — review, share and discuss Claude Code plans on ephemeral (24h), sandboxed, commentable links.
+A Claude Code plugin for [scratchtml.link](https://scratchtml.link) — share and review any document Claude generates (reports, implementation plans, design documents, UI/component mockups) on ephemeral (24h), sandboxed, commentable links.
 
 ## What it does
 
-When you enter plan mode, this plugin shapes the plan as it's authored (HTML mockups, mermaid diagrams, callouts), then routes it through a review loop instead of letting it go straight to approval — for **every** plan, in any permission mode:
+Two things. **Any document** Claude produces — a design doc, a report, a frontend mockup — can be shared for inline review with `/scratchtml:share` (or Claude will offer to). And when you enter **plan mode**, the plugin additionally shapes the plan as it's authored (HTML mockups, mermaid diagrams, callouts), then routes it through a review loop instead of letting it go straight to approval — for **every** plan, in any permission mode:
 
 ```
 enter plan mode ──▶ Claude is primed to author HTML mockups / diagrams / callouts
@@ -29,9 +29,9 @@ Plus three commands, usable anytime:
 
 | Command | What it does |
 |---|---|
-| `/scratchtml:share [path]` | Upload any markdown/document → shareable, commentable 24h link |
+| `/scratchtml:share [path]` | Upload any markdown/HTML document → shareable, commentable 24h link |
 | `/scratchtml:get [slug-or-url]` | Pull inline comments, each paired with the text it refers to |
-| `/scratchtml:list` | List your uploaded plans (links + expiry) |
+| `/scratchtml:list` | List your uploaded documents (links + expiry) |
 
 ## Install
 

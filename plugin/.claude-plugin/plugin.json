@@ -1,8 +1,8 @@
 {
   "name": "scratchtml",
-  "displayName": "scratchtml plans",
-  "version": "0.6.0",
-  "description": "Review, share and discuss Claude Code plans on scratchtml. Plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; Claude can reply to reviewers' comments; share/get/list commands included.",
+  "displayName": "scratchtml",
+  "version": "0.7.0",
+  "description": "Share and review any markdown/HTML document — reports, implementation plans, designs, mockups — on scratchtml's ephemeral, commentable links. Includes an automatic plan-mode review loop: plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; Claude can reply to reviewers' comments; share/get/list commands included.",
   "author": {
     "name": "Nathan Zylbersztejn",
     "email": "nathan.zylbersztejn@gmail.com"

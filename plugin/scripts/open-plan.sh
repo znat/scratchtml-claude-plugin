@@ -1,5 +1,5 @@
 #!/bin/bash
-# scratchtml post-upload — PostToolUse hook on mcp__scratchtml__upload_plan.
+# scratchtml post-upload — PostToolUse hook on mcp__scratchtml__share_document.
 #
 #   1. Marks that a plan was uploaded this session (.uploaded) — this is the bit
 #      the PreToolUse gate reads to let the next ExitPlanMode through.

@@ -8,7 +8,7 @@
 # permission flow proceed so PermissionRequest/approve-plan can still run.
 #
 # Per-PLAN (not per-session), via two bits of session state:
-#   .uploaded  — touched by open-plan.sh after each upload_plan ("a plan was
+#   .uploaded  — touched by open-plan.sh after each share_document ("a plan was
 #                uploaded since the last exit" = reviewed)
 #   .denied    — set of plan-content hashes already denied this session (a retry
 #                of a denied plan with no upload = the user chose to skip review)
