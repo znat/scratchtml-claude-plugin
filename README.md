@@ -4,10 +4,12 @@
 
 <h1 align="center">scratchtml for Claude Code</h1>
 
-<p align="center">Review and iterate on Claude's plans like you would in Notion — and share any document Claude generates (reports, design docs, UI mockups) on an ephemeral, sandboxed, commentable link.</p>
+<h3 align="center">Review and iterate on Claude's plans like you would in Notion.</h3>
+
+<p align="center">Share any document Claude generates — reports, design docs, UI mockups — on an ephemeral, sandboxed, commentable link.</p>
 
 <p align="center">
-  <img src="media/plan-review.webp" width="820"
+  <img src="media/plan-review.webp" width="600"
        alt="Claude Code drafts a plan in the terminal, uploads it to scratchtml, teammates comment on the rendered plan in the browser, and the comments flow back into the terminal to iterate." />
 </p>
 
@@ -22,6 +24,10 @@
 ```
 
 Do the `/mcp` sign-in right away — it's what lets the first upload succeed. Then ask Claude to plan your next feature.
+
+### Token-free uploads by file path (local)
+
+The plugin also bundles a small **local** MCP server (`scratchtml-local`) that adds an `upload_document` tool taking a **file path**. It reads the file on your machine and streams it straight to scratchtml, so a large document's bytes never pass through the model's context — cheaper and faster than pasting the content inline. It requires `node` on your PATH and signs in the first time you use it (a browser tab opens; the token is shared with the [`scratchtml` CLI](https://www.npmjs.com/package/scratchtml)). The hosted `scratchtml` server and its `/mcp` sign-in above are unchanged — this is purely additive, and clients without a local filesystem keep using the inline `share_document`.
 
 ## How it works
 

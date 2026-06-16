@@ -13,7 +13,7 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "mcp__plugin_scratchtml_scratchtml__share_document",
+        "matcher": "mcp__plugin_scratchtml_scratchtml(-local)?__(share_document|upload_document)",
         "hooks": [
           {
             "type": "command",
