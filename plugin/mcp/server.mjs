@@ -21830,9 +21830,9 @@ function resolveRevises(revises) {
   return { slug };
 }
 var server = new McpServer(
-  { name: "scratchtml-local", version: "0.1.0" },
+  { name: "scratchtml", version: "0.1.0" },
   {
-    instructions: "scratchtml turns any markdown or HTML document into a short-lived, commentable link for review. This is the LOCAL server: prefer upload_document with a file path so the document's bytes never pass through the model's context (use share_document only for content not already on disk). Pull inline comments with get_feedback and answer them with reply_to_feedback."
+    instructions: "scratchtml turns any markdown or HTML document into a short-lived, commentable link for review. Prefer upload_document with a file path so the document's bytes never pass through the model's context (use share_document only for content not already on disk). Pull inline comments with get_feedback and answer them with reply_to_feedback."
   }
 );
 server.registerTool(
