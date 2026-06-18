@@ -21760,7 +21760,8 @@ async function uploadFile(opts) {
   const headers = {
     authorization: `Bearer ${opts.token}`,
     "content-type": "text/html",
-    "x-filename": basename(opts.filename)
+    "x-filename": basename(opts.filename),
+    "x-scratchtml-client": opts.client ?? "cli"
   };
   if (opts.revises) headers["x-revises"] = opts.revises;
   if (opts.lockComments) headers["x-comments-locked"] = "1";
@@ -21863,7 +21864,8 @@ server.registerTool(
         filename: basename2(path2),
         body,
         revises: revisesSlug,
-        lockComments
+        lockComments,
+        client: "mcp"
       });
       return text(uploadMessage(r, revisesSlug));
     } catch (e) {
@@ -21894,7 +21896,8 @@ server.registerTool(
         filename: filename ?? "document.md",
         body: new TextEncoder().encode(content),
         revises: revisesSlug,
-        lockComments
+        lockComments,
+        client: "mcp"
       });
       return text(uploadMessage(r, revisesSlug));
     } catch (e) {

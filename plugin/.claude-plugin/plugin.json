@@ -1,7 +1,7 @@
 {
   "name": "scratchtml",
   "displayName": "scratchtml",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Share and review any markdown/HTML document — reports, implementation plans, designs, mockups — on scratchtml's ephemeral, commentable links. Includes an automatic plan-mode review loop: plans are uploaded for inline review before exiting plan mode; revisions carry a changes-from-review section; Claude can reply to reviewers' comments; share/get/list commands included.",
   "author": {
     "name": "Nathan Zylbersztejn",
