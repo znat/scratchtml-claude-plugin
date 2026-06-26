@@ -26,9 +26,16 @@ if [ -n "$SESSION_ID" ]; then
   touch "$STATE_DIR/$SESSION_ID.uploaded"
 fi
 
-# Open in the local browser.
+# Open in the local browser — but ONLY for a brand-new document. A revision
+# (the `revises` input is set) keeps the same link, and any already-open viewer
+# tab refreshes itself in place, so opening a fresh tab on every revision is just
+# noise. Detect a non-empty `revises` in the tool input and skip the open then.
 URL="$(printf '%s' "$PAYLOAD" | grep -oE 'https://usercontent\.scratchtml\.link/[a-z0-9]{16}' | head -n1)"
-if [ "${1:-true}" = "true" ] && [ -n "$URL" ]; then
+IS_REVISION=0
+if printf '%s' "$PAYLOAD" | grep -qE '"revises"[[:space:]]*:[[:space:]]*"[0-9A-Za-z]'; then
+  IS_REVISION=1
+fi
+if [ "${1:-true}" = "true" ] && [ -n "$URL" ] && [ "$IS_REVISION" = "0" ]; then
   if command -v open >/dev/null 2>&1; then
     open "$URL"
   elif command -v xdg-open >/dev/null 2>&1; then

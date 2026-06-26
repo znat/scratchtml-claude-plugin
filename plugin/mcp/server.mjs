@@ -21979,6 +21979,104 @@ ${r.lines.join("\n")}`
   }
 );
 server.registerTool(
+  "set_activity",
+  {
+    title: 'Show live "Claude is\u2026" activity on a scratchtml document',
+    description: 'Broadcast your live working state to everyone viewing a scratchtml document \u2014 shown the same way a human collaborator\'s typing is, as a "\u2726 Claude is \u2026" presence indicator. Use this while engaging with comments: send `thinking` when you start reading, `drafting` while preparing a revision, `replying` while writing a reply, and `idle` when you are done (which clears the indicator). It is an ephemeral hint only \u2014 nothing is stored. Call it before and after the work in a watch loop so viewers see what you are doing in real time.',
+    inputSchema: {
+      document: external_exports.string().min(1).describe("A scratchtml slug (16 chars) or a full scratchtml URL."),
+      state: external_exports.enum(["thinking", "drafting", "replying", "idle"]).describe("thinking | drafting (a revision) | replying | idle (clears the indicator)."),
+      note: external_exports.string().optional().describe("Optional short context shown with the indicator (clamped to ~120 chars)."),
+      threadId: external_exports.string().optional().describe(
+        `Optional thread id (from wait_for_comments) to scope the indicator to a thread \u2014 viewers then see "Claude is replying" inside that thread. Best paired with state 'replying'.`
+      )
+    }
+  },
+  async ({ document, state, note, threadId }) => {
+    const slug = document.match(SLUG_RE)?.[0];
+    if (!slug) return toolError("Could not find a scratchtml slug in that input.");
+    try {
+      const { apiBaseUrl, token } = await ensureSession();
+      const res = await fetch(`${apiBaseUrl}/api/artifacts/${slug}/activity`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+        body: JSON.stringify({ state, note, threadId })
+      });
+      if (res.status === 404) {
+        return toolError(
+          `No live scratchtml document you own for "${slug}" (not found, expired, or not yours).`
+        );
+      }
+      if (!res.ok) return toolError(`Could not set activity (${res.status}).`);
+      return text(`\u2713 Activity set to "${state}" on ${slug}.`);
+    } catch (e) {
+      return toolError(messageFor(e));
+    }
+  }
+);
+server.registerTool(
+  "wait_for_comments",
+  {
+    title: "Wait for new comments on a scratchtml document (long-poll)",
+    description: 'Block until a new human comment lands on a scratchtml document, then return it \u2014 the inbound trigger for an interactive watch loop. This is a long-poll: the request parks on the server (up to ~25s) and returns instantly when a comment arrives, or empty at timeout. Pass the `cursor` from the previous call back as `since` so you never see the same comment twice; omit `since` on the first call to establish a baseline (returns no backlog). Your own (Claude) replies are excluded, so you never react to yourself. Each comment includes its thread id, the quoted selection, and `mentionsClaude`. After reading, decide per comment: answer with reply_to_feedback, push a revision with upload_document (revises:slug), just acknowledge with a short reply_to_feedback, or skip. A 410/"gone" result means the document expired or was deleted \u2014 stop watching.',
+    inputSchema: {
+      document: external_exports.string().min(1).describe("A scratchtml slug (16 chars) or a full scratchtml URL."),
+      since: external_exports.string().optional().describe("The `cursor` returned by the previous call. Omit on the first call."),
+      waitSeconds: external_exports.number().int().min(0).max(25).optional().describe("How long to hold the request, in seconds (0\u201325, default 25).")
+    }
+  },
+  async ({ document, since, waitSeconds }) => {
+    const slug = document.match(SLUG_RE)?.[0];
+    if (!slug) return toolError("Could not find a scratchtml slug in that input.");
+    try {
+      const { apiBaseUrl, token } = await ensureSession();
+      const qs = new URLSearchParams();
+      if (since) qs.set("since", since);
+      if (waitSeconds != null) qs.set("wait", String(waitSeconds));
+      const res = await fetch(
+        `${apiBaseUrl}/api/artifacts/${slug}/activity?${qs.toString()}`,
+        { headers: { authorization: `Bearer ${token}` } }
+      );
+      if (res.status === 410) {
+        return text(
+          `Document ${slug} has expired or been deleted \u2014 stop watching it. (This is the normal end of a document's lifecycle.)`
+        );
+      }
+      if (res.status === 404) {
+        return toolError(
+          `No live scratchtml document you own for "${slug}" (not found, expired, or not yours).`
+        );
+      }
+      if (!res.ok) return toolError(`Could not wait for comments (${res.status}).`);
+      const data = await res.json();
+      if (data.comments.length === 0) {
+        return text(
+          `No new comments. cursor: ${data.cursor}
+(Pass this cursor as \`since\` on your next wait_for_comments call.)`
+        );
+      }
+      const blocks = data.comments.map((c) => {
+        const who = c.authorName ?? "Someone";
+        const kind = c.isOpener ? "new thread" : "reply";
+        const mention = c.mentionsClaude ? " \xB7 @claude" : "";
+        const quoted = c.selectedText ? `
+  on: \u201C${c.selectedText}\u201D` : "";
+        return `- ${who} (${kind}${mention}) \u2014 thread ${c.threadId}${quoted}
+  ${c.body}`;
+      });
+      return text(
+        `${data.comments.length} new comment(s):
+${blocks.join("\n")}
+
+cursor: ${data.cursor}
+Decide per comment: reply_to_feedback (answer/acknowledge) and/or upload_document with revises:${slug} (push a revision). Then pass the cursor above as \`since\` on your next wait_for_comments call.`
+      );
+    } catch (e) {
+      return toolError(messageFor(e));
+    }
+  }
+);
+server.registerTool(
   "list_documents",
   {
     title: "List your scratchtml documents",
