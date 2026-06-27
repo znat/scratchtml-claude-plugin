@@ -34,17 +34,18 @@ Repeat until a **stop condition** (below) is met:
 
 ### Narrate every step — always attach a `note`
 
-Viewers should see your live running status the way they'd watch a collaborator's cursor, not just a bare verb. So **every** `set_activity` call carries a short, honest `note` describing the *specific* micro-action you're on right now — and you **update the note as you move through the work** (each new sub-step is a fresh `set_activity` with the same or shifted state and a new note). Map the actual thing you're doing to a state + note:
+Viewers should see your live running status the way they'd watch a collaborator's cursor, not just a bare verb. The `note` **is** the visible status: viewers see it rendered as **"Claude is {note}"**, so it can be richer and more specific than the three states — write it as a short **present-participle phrase** that reads after "is". So **every** `set_activity` call carries a short, honest `note` describing the *specific* micro-action you're on right now — and you **update the note as you move through the work** (each new sub-step is a fresh `set_activity` with the same or shifted state and a new note). The `state` still matters (it drives the indicator's color, dots, and clearing on `idle`), but the words come from the note. Map the actual thing you're doing to a state + note:
 
-| What you're actually doing | `state` | `note` (example) |
+| What you're actually doing | `state` | `note` → shows as "Claude is …" |
 | --- | --- | --- |
 | Just picked up a comment | `thinking` | `reading your comment on auth` |
+| Getting oriented in the code | `thinking` | `exploring the design system` |
 | Looking something up to answer | `thinking` | `checking how the worker handles retries` |
 | Weighing an approach | `thinking` | `considering two ways to scope this` |
 | Preparing a revision | `drafting` | `revising the rate-limit section` |
 | Writing the reply | `replying` | `writing a reply about the TTL` (scope to `threadId`) |
 
-Rules for the note: a few words (it's clamped to ~120 chars), **honest** (it must match what you're truly doing — never narrate a step you aren't on), and **specific** (name the topic/section, not "working…"). A genuinely long single step (a big revision, a slow lookup) is also where the heartbeat lives: re-emit `set_activity` with a **refreshed** note (e.g. `still revising — wiring up the new endpoint`) roughly every ~20s so the indicator stays alive and the status keeps moving. Always finish the batch with `idle`.
+Rules for the note: a few words (it's clamped to ~120 chars), a **present-participle phrase** that reads after "is" (`exploring the design system`, not `Design system.`), **honest** (it must match what you're truly doing — never narrate a step you aren't on), and **specific** (name the topic/section, not "working…"). Omit the note only if you have nothing specific to say — then the fixed verb ("is thinking") shows as a fallback. A genuinely long single step (a big revision, a slow lookup) is also where the heartbeat lives: re-emit `set_activity` with a **refreshed** note (e.g. `still revising — wiring up the new endpoint`) roughly every ~20s so the indicator stays alive and the status keeps moving. Always finish the batch with `idle`.
 
 **Heartbeat during long work:** the viewer's indicator self-clears after ~40s with no new activity (so a crashed agent doesn't leave a stuck label), and the UI shows a "this can take a moment — keep reviewing & commenting" reassurance after a few seconds. If a single step genuinely runs long (a big revision, a slow reply), **re-emit the current state with a refreshed `note`** (`set_activity` again with the same state/threadId and an updated status line) roughly every ~20s so the indicator stays alive and keeps moving — an honest heartbeat, not a fake one. Always finish with `idle`.
 

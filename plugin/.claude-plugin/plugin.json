@@ -1,7 +1,7 @@
 {
   "name": "scratchtml",
   "displayName": "scratchtml",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Share and review any markdown/HTML document — reports, implementation plans, designs, mockups — on scratchtml's ephemeral, commentable links. Plans are uploaded for inline review, then Claude watches the document by default — answering comments, pushing revisions, and showing live per-step 'Claude is …' status to viewers as people review; say 'implement' to build or 'stop watching' to stop. Plans are authored visual-by-default (mermaid diagrams + inline HTML mockups) while staying Markdown for clean revision diffs. Includes share/get/list commands.",
   "author": {
     "name": "Nathan Zylbersztejn",
