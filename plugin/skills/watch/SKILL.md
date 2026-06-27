@@ -25,14 +25,28 @@ Repeat until a **stop condition** (below) is met:
 
 1. Call `mcp__plugin_scratchtml_scratchtml__wait_for_comments` with the document and the `cursor` from the previous call as `since` (omit `since` on the very first call — it establishes a baseline and returns no backlog). This blocks up to ~25s.
 2. **No new comments** → loop again with the returned `cursor`. (Track consecutive empty returns for the idle timeout.)
-3. **New comment(s)** → **immediately** `set_activity('thinking')` so viewers get instant, honest feedback that their comment was picked up (don't wait until you've finished deciding). Then, for each comment, decide and act (see *Decision policy*). Always:
-   - Set the matching state while acting: `set_activity('replying', { threadId })` **scoped to the thread you're answering** (viewers see "Claude is replying" inside that thread, like a human typing a reply), or `set_activity('drafting')` while preparing a revision.
+3. **New comment(s)** → **immediately** `set_activity('thinking', { note: 'reading your comment on …' })` so viewers get instant, honest feedback that their comment was picked up (don't wait until you've finished deciding). Then, for each comment, decide and act (see *Decision policy*). Always:
+   - Set the matching state **with a fresh `note`** while acting, and update the note as you move through sub-steps (see *Narrate every step* above): `set_activity('replying', { threadId, note: '…' })` **scoped to the thread you're answering** (viewers see "Claude is replying" inside that thread, like a human typing a reply), or `set_activity('drafting', { note: 'revising the … section' })` while preparing a revision.
    - `set_activity('idle')` when finished with the batch.
    - Carry the returned `cursor` forward as `since` so you never see the same comment twice.
 
 **On honesty:** only advertise a state that is actually happening — `thinking` the moment you pick up the comment, `replying`/`drafting` only while you're truly doing it. Never leave a `replying` indicator up when you're not writing.
 
-**Heartbeat during long work:** the viewer's indicator self-clears after ~40s with no new activity (so a crashed agent doesn't leave a stuck label), and the UI shows a "this can take a moment — keep reviewing & commenting" reassurance after a few seconds. If a single step genuinely runs long (a big revision, a slow reply), **re-emit the current state** (`set_activity` again with the same state/threadId) roughly every ~20s so the indicator stays alive — an honest heartbeat, not a fake one. Always finish with `idle`.
+### Narrate every step — always attach a `note`
+
+Viewers should see your live running status the way they'd watch a collaborator's cursor, not just a bare verb. So **every** `set_activity` call carries a short, honest `note` describing the *specific* micro-action you're on right now — and you **update the note as you move through the work** (each new sub-step is a fresh `set_activity` with the same or shifted state and a new note). Map the actual thing you're doing to a state + note:
+
+| What you're actually doing | `state` | `note` (example) |
+| --- | --- | --- |
+| Just picked up a comment | `thinking` | `reading your comment on auth` |
+| Looking something up to answer | `thinking` | `checking how the worker handles retries` |
+| Weighing an approach | `thinking` | `considering two ways to scope this` |
+| Preparing a revision | `drafting` | `revising the rate-limit section` |
+| Writing the reply | `replying` | `writing a reply about the TTL` (scope to `threadId`) |
+
+Rules for the note: a few words (it's clamped to ~120 chars), **honest** (it must match what you're truly doing — never narrate a step you aren't on), and **specific** (name the topic/section, not "working…"). A genuinely long single step (a big revision, a slow lookup) is also where the heartbeat lives: re-emit `set_activity` with a **refreshed** note (e.g. `still revising — wiring up the new endpoint`) roughly every ~20s so the indicator stays alive and the status keeps moving. Always finish the batch with `idle`.
+
+**Heartbeat during long work:** the viewer's indicator self-clears after ~40s with no new activity (so a crashed agent doesn't leave a stuck label), and the UI shows a "this can take a moment — keep reviewing & commenting" reassurance after a few seconds. If a single step genuinely runs long (a big revision, a slow reply), **re-emit the current state with a refreshed `note`** (`set_activity` again with the same state/threadId and an updated status line) roughly every ~20s so the indicator stays alive and keeps moving — an honest heartbeat, not a fake one. Always finish with `idle`.
 
 ## Decision policy
 
@@ -42,6 +56,7 @@ You react to **every** new human comment, not only `@claude` mentions — `menti
 - **Actionable change request** → `set_activity('drafting')`, edit the local file, `upload_document` with `revises:<slug>`, then `reply_to_feedback` noting the new revision and how you addressed it.
 - **Minor / acknowledgement** ("looks good", "noted") → a short `reply_to_feedback` ("👍 folding that in").
 - **Nothing useful to add** (chatter between others, already handled) → skip; don't reply for the sake of it.
+- **Proceed / stop signal** — a comment (or a chat message) that clearly means *ship it / implement / go ahead / build it* **or** *stop watching / that's enough* is an **exit**, not a revision request. Acknowledge briefly, then **end the loop** (see *Stop conditions → User proceed/stop*). Don't treat "implement" as a change to fold into the document.
 
 Use judgment and stay concise. Prefer a reply for clarifications; reserve revisions for clear, concrete change requests.
 
@@ -68,14 +83,19 @@ End the loop, tell the user why, and stop calling the tools when any of these ha
 
 1. **Document gone/expired** — `wait_for_comments` returns a "stop watching" / gone result (the doc hit its 24h TTL or was deleted). This is the normal end of a document's life.
 2. **Idle timeout** — ~30 minutes (≈ many consecutive empty long-polls) with no new comments. Say: "Stopped watching `<slug>` after 30 min idle — run `/watch <url>` to resume." 
-3. **User stop** — the user interrupts; stop immediately.
-4. **Backstop** — if you've been watching for several hours, wind down and offer to resume.
+3. **User stop** — the user interrupts (Esc); stop immediately.
+4. **User proceed/stop signal** — a clear *implement / ship it / build it* or *stop watching* message (from a doc comment or chat) ends the loop. End it cleanly:
+   - **In plan mode** (you started watching right after uploading a plan, replacing the old Iterate/Implement menu): on *implement*, pull `get_feedback`, `reply_to_feedback` on each open thread telling the reviewer how their comment will be handled, then call `ExitPlanMode` and build — honoring the approval mode (`auto` ⇒ it's auto-approved; `ask` ⇒ the normal approval dialog appears). On *stop watching*, just stop and leave the plan as-is.
+   - **Otherwise**, acknowledge and stop watching.
+5. **Backstop** — if you've been watching for several hours, wind down and offer to resume.
 
 For resilience you can run this under `/loop` (e.g. `/loop /watch <url>`): each `/loop` tick re-enters the watch, and the stop conditions above still apply.
 
 ## Revision convention
 
 When a revision incorporates feedback, **edit the document in place** and **reply to the relevant thread** explaining what changed — the reply is the record. Do **not** add a "Changes from review" changelog section (at the top or bottom) and do not leave inline "(per review)" markers; the threaded reply already tells each reviewer how their comment was handled, so a separate changelog just duplicates it and clutters the document.
+
+**Keep it Markdown, keep it visual.** Revisions stay **Markdown** (not a full HTML file) so each version diffs cleanly against the last — only the visual bits are inline HTML/SVG. As you revise, keep taking every opportunity to make the document visual: a ```mermaid diagram for any flow/architecture/sequence, a small inline HTML mockup for any UI (matching the design system — see above), and callouts for risks. If feedback adds a flow or a screen, add the diagram/mockup for it rather than only prose.
 
 ## Failure handling
 

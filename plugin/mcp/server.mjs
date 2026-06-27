@@ -21986,7 +21986,9 @@ server.registerTool(
     inputSchema: {
       document: external_exports.string().min(1).describe("A scratchtml slug (16 chars) or a full scratchtml URL."),
       state: external_exports.enum(["thinking", "drafting", "replying", "idle"]).describe("thinking | drafting (a revision) | replying | idle (clears the indicator)."),
-      note: external_exports.string().optional().describe("Optional short context shown with the indicator (clamped to ~120 chars)."),
+      note: external_exports.string().optional().describe(
+        `A short, honest running-status line shown live to viewers next to the indicator \u2014 narrate the specific step you're on (e.g. "reading your comment on auth", "revising the rate-limit section", "writing a reply about the TTL"), and refresh it as you move through sub-steps. A few words; clamped to ~120 chars.`
+      ),
       threadId: external_exports.string().optional().describe(
         `Optional thread id (from wait_for_comments) to scope the indicator to a thread \u2014 viewers then see "Claude is replying" inside that thread. Best paired with state 'replying'.`
       )

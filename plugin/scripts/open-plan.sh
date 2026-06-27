@@ -53,6 +53,14 @@ if [ "${3:-ask}" = "auto" ]; then
 else
   MENU_FILE="${PROMPTS}/menu-ask.txt"
 fi
+# Brand-new doc → kick off the watch loop (post-upload.txt). A revision keeps the
+# same link and means the watch loop (or a manual re-upload) is already in flight,
+# so emit the minimal "carry on" note instead of re-announcing / re-watching.
+if [ "$IS_REVISION" = "1" ]; then
+  POST_FILE="${PROMPTS}/post-revision.txt"
+else
+  POST_FILE="${PROMPTS}/post-upload.txt"
+fi
 
 printf '%s' "$PAYLOAD" | python3 -c "
 import sys, json
@@ -82,6 +90,6 @@ if ui_mockups:
 
 out = {'hookSpecificOutput': {'hookEventName': 'PostToolUse', 'additionalContext': msg}}
 print(json.dumps(out))
-" "${PROMPTS}/post-upload.txt" "$MENU_FILE" "${2:-true}"
+" "$POST_FILE" "$MENU_FILE" "${2:-true}"
 
 exit 0
